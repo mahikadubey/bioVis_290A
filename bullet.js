@@ -10,9 +10,9 @@ d3.bullet = function() {
       ranges = bulletRanges,
       markers = bulletMarkers,
       measures = bulletMeasures,
+      averages = bulletAverages,
       width = 380,
       height = 30,
-      tickFormat = null;
 
   // For each small multiple…
   function bullet(g) {
@@ -20,11 +20,11 @@ d3.bullet = function() {
       var rangez = ranges.call(this, d, i).slice().sort(d3.descending),
           markerz = markers.call(this, d, i).slice().sort(d3.descending),
           measurez = measures.call(this, d, i).slice().sort(d3.descending),
+          averagez = averages.call(this, d, i).slice().sort(d3.descending),
           g = d3.select(this);
 
       // Compute the new x-scale.
       var x1 = d3.scale.linear()
-          //.domain([0, Math.max(rangez[0], markerz[0], measurez[0])])
           .domain([-4,4])
           .range(reverse ? [width, 0] : [0, width]);
 
@@ -104,56 +104,28 @@ d3.bullet = function() {
           .attr("y1", height / 6)
           .attr("y2", height * 5 / 6);
 
-      // Compute the tick format.
-      var format = tickFormat || x1.tickFormat(8);
+      // update the average line
+      var average = g.selectAll("line.average")
+          .data(averagez);
 
-      // Update the tick groups.
-      var tick = g.selectAll("g.tick")
-          .data(x1.ticks(8), function(d) {
-            return this.textContent || format(d);
-          });
-
-      // Initialize the ticks with the old scale, x0.
-      var tickEnter = tick.enter().append("g")
-          .attr("class", "tick")
-          .attr("transform", bulletTranslate(x0))
-          .style("opacity", 1e-6);
-
-      //tickEnter.append("line")
-        //  .attr("y1", height)
-        //  .attr("y2", height * 7 / 6);
-
-      //tickEnter.append("text")
-        //  .attr("text-anchor", "middle")
-        //  .attr("dy", "1em")
-        //  .attr("y", height * 7 / 6)
-        //  .text(format);
-
-      // Transition the entering ticks to the new scale, x1.
-      tickEnter.transition()
+      average.enter().append("line")
+          .attr("class", "average")
+          .attr("x1", x0)
+          .attr("x2", x0)
+          .attr("y1", height / 6)
+          .attr("y2", height * 5 / 6)
+        .transition()
           .duration(duration)
-          .attr("transform", bulletTranslate(x1))
-          .style("opacity", 1);
+          .attr("x1", x1)
+          .attr("x2", x1);
 
-      // Transition the updating ticks to the new scale, x1.
-      var tickUpdate = tick.transition()
+      average.transition()
           .duration(duration)
-          .attr("transform", bulletTranslate(x1))
-          .style("opacity", 1);
+          .attr("x1", x1)
+          .attr("x2", x1)
+          .attr("y1", height / 6)
+          .attr("y2", height * 5 / 6);
 
-      tickUpdate.select("line")
-          .attr("y1", height)
-          .attr("y2", height * 7 / 6);
-
-      tickUpdate.select("text")
-          .attr("y", height * 7 / 6);
-
-      // Transition the exiting ticks to the new scale, x1.
-      tick.exit().transition()
-          .duration(duration)
-          .attr("transform", bulletTranslate(x1))
-          .style("opacity", 1e-6)
-          .remove();
     });
     d3.timer.flush();
   }
@@ -173,12 +145,17 @@ d3.bullet = function() {
     return bullet;
   };
 
-  // markers (previous, goal)
   bullet.markers = function(x) {
     if (!arguments.length) return markers;
     markers = x;
     return bullet;
   };
+
+  bullet.averages = function(x) {
+      if (!arguments.length) return averages;
+      averages = x;
+      return bullet;
+  }
 
   // measures (actual, forecast)
   bullet.measures = function(x) {
@@ -196,12 +173,6 @@ d3.bullet = function() {
   bullet.height = function(x) {
     if (!arguments.length) return height;
     height = x;
-    return bullet;
-  };
-
-  bullet.tickFormat = function(x) {
-    if (!arguments.length) return tickFormat;
-    tickFormat = x;
     return bullet;
   };
 
@@ -224,6 +195,10 @@ function bulletMarkers(d) {
 
 function bulletMeasures(d) {
   return d.measures;
+}
+
+function bulletAverages(d) {
+    return d.averages;
 }
 
 function bulletTranslate(x) {
