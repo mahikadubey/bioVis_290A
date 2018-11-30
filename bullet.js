@@ -10,9 +10,8 @@ d3.bullet = function() {
       ranges = bulletRanges,
       markers = bulletMarkers,
       measures = bulletMeasures,
-      averages = bulletAverages,
       width = 380,
-      height = 30,
+      height = 30;
 
   // For each small multiple…
   function bullet(g) {
@@ -20,11 +19,11 @@ d3.bullet = function() {
       var rangez = ranges.call(this, d, i).slice().sort(d3.descending),
           markerz = markers.call(this, d, i).slice().sort(d3.descending),
           measurez = measures.call(this, d, i).slice().sort(d3.descending),
-          averagez = averages.call(this, d, i).slice().sort(d3.descending),
           g = d3.select(this);
 
       // Compute the new x-scale.
       var x1 = d3.scale.linear()
+          //.domain([0, Math.max(rangez[0], markerz[0], measurez[0])])
           .domain([-4,4])
           .range(reverse ? [width, 0] : [0, width]);
 
@@ -41,7 +40,7 @@ d3.bullet = function() {
           w1 = bulletWidth(x1);
 
       // Update the range rects.
-      var range = g.selectAll("rect.range")
+      /*var range = g.selectAll("rect.range")
           .data(rangez);
 
       range.enter().append("rect")
@@ -58,7 +57,7 @@ d3.bullet = function() {
           .duration(duration)
           .attr("x", reverse ? x1 : 0)
           .attr("width", w1)
-          .attr("height", height);
+          .attr("height", height);*/
 
       // Update the measure rects.
       var measure = g.selectAll("rect.measure")
@@ -103,29 +102,6 @@ d3.bullet = function() {
           .attr("x2", x1)
           .attr("y1", height / 6)
           .attr("y2", height * 5 / 6);
-
-      // update the average line
-      var average = g.selectAll("line.average")
-          .data(averagez);
-
-      average.enter().append("line")
-          .attr("class", "average")
-          .attr("x1", x0)
-          .attr("x2", x0)
-          .attr("y1", height / 6)
-          .attr("y2", height * 5 / 6)
-        .transition()
-          .duration(duration)
-          .attr("x1", x1)
-          .attr("x2", x1);
-
-      average.transition()
-          .duration(duration)
-          .attr("x1", x1)
-          .attr("x2", x1)
-          .attr("y1", height / 6)
-          .attr("y2", height * 5 / 6);
-
     });
     d3.timer.flush();
   }
@@ -145,17 +121,12 @@ d3.bullet = function() {
     return bullet;
   };
 
+  // markers (previous, goal)
   bullet.markers = function(x) {
     if (!arguments.length) return markers;
     markers = x;
     return bullet;
   };
-
-  bullet.averages = function(x) {
-      if (!arguments.length) return averages;
-      averages = x;
-      return bullet;
-  }
 
   // measures (actual, forecast)
   bullet.measures = function(x) {
@@ -195,10 +166,6 @@ function bulletMarkers(d) {
 
 function bulletMeasures(d) {
   return d.measures;
-}
-
-function bulletAverages(d) {
-    return d.averages;
 }
 
 function bulletTranslate(x) {

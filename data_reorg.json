@@ -1,6 +1,10 @@
 [
-  {"title": "ENSG-98242.13" , "subtitle": "RNF43_WT", "ranges": [0, 8, 8], "measures": [4, 8], "markers":[0.3024, 0.1094, -0.128, 0.937], "averages":[0.3052]},
-  {"title": "", "subtitle": "GFP", "ranges": [0, 8, 8], "measures": [4, 8], "markers":[-1.0952, -0.1731, -0.4922, -0.125], "averages":[-0.471375]},
-  {"title": "", "subtitle": "RNF43_659fs", "ranges": [0, 8, 8], "measures": [4, 8], "markers":[-0.0241, 0.6749, 0.5268, 0.5824], "averages":[0.44]},
-  {"title": "", "subtitle": "RNF43_117fs", "ranges": [0, 8, 8], "measures": [4, 8], "markers":[1.8746, -2.2823, -1.4579, 0.7703], "averages":[-0.27382500000000004]}
+  {"title": "ENSG-98242.13" , "subtitle": "RNF43_WT", "ranges": [0, 8, 8], "measures": [1, 2, 3, 4, 5, 6, 7, 8], "markers":[0.3024, 0.1094, -0.128, 0.937]},
+  {"title": "ENSG-98242.13", "subtitle": "GFP", "ranges": [0, 8, 8], "measures": [1, 2, 3, 4, 5, 6, 7, 8], "markers":[-1.0952, -0.1731, -0.4922, -0.125]},
+  {"title": "ENSG-98242.13", "subtitle": "RNF43_659fs", "ranges": [0, 8, 8], "measures": [1, 2, 3, 4, 5, 6, 7, 8], "markers":[-0.0241, 0.6749, 0.5268, 0.5824]},
+  {"title": "ENSG-98242.13", "subtitle": "RNF43_117fs", "ranges": [0, 8, 8], "measures": [1, 2, 3, 4, 5, 6, 7, 8], "markers":[1.8746, -2.2823, -1.4579, 0.7703]},
+  {"title": "ENSG-34108.12" , "subtitle": "RNF43_WT", "ranges": [0, 8, 8], "measures": [1, 2, 3, 4, 5, 6, 7, 8], "markers":[-0.6278, 0.0309, -0.7, 0.2914]},
+  {"title": "ENSG-34108.12", "subtitle": "GFP", "ranges": [0, 8, 8], "measures": [1, 2, 3, 4, 5, 6, 7, 8], "markers":[1.5018, 1.3131, 1.5731, 1.1274]},
+  {"title": "ENSG-34108.12", "subtitle": "RNF43_659fs", "ranges": [0, 8, 8], "measures": [1, 2, 3, 4, 5, 6, 7, 8], "markers":[-1.3516, -0.848, -1.4773, -0.7508]},
+  {"title": "ENSG-34108.12", "subtitle": "RNF43_117fs", "ranges": [0, 8, 8], "measures": [1, 2, 3, 4, 5, 6, 7, 8], "markers":[0.7395, -0.386, 0.1154, -0.551]}
 ]
