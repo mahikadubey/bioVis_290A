@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
-
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: auto;
@@ -9,7 +8,6 @@ body {
   position: relative;
   width: 960px;
 }
-
 .bullet { font: 10px sans-serif; }
 .bullet .marker { stroke: black; stroke-width: 1px; }
 .bullet .tick line { stroke: #666; stroke-width: .5px; }
@@ -26,25 +24,54 @@ body {
 .bullet .measure.s7 { fill: #ffe1e1; }
 .bullet .title { font-size: 13px; font-weight: bold; }
 .bullet .subtitle { fill: #999; }
-
 </style>
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script src="bullet.js"></script>
+<body>
+  <input type="checkbox" checked = "true" name = "title" class = "myCheckbox" value = "ENSG-98242.13">ENSG-98242.13
+  <input type="checkbox" checked = "true" name = "title" class = "myCheckbox" value = "ENSG-34108.12">ENSG-34108.12
+  <div class = "lines" > </div>
+</body>
 <script>
 
 var margin = {top: 5, right: 40, bottom: 5, left: 105},
     width = 960 - margin.left - margin.right,
     height = 50 - margin.top - margin.bottom;
 
+var state = {
+  "mapOfState":{},
+  "biologicalData":[]
+};
+
 var chart = d3.bullet()
     .width(width)
     .height(height);
 
-d3.json("data_reorg.json", function(error, data) {
-  if (error) throw error;
+function selectionUpdate(label, value){
+  state.mapOfState[label] = value; 
+  render(); 
+}
 
-  var svg = d3.select("body").selectAll("svg")
-      .data(data)
+function biologicalUpdate(data){
+  state.biologicalData = data; 
+  state.mapOfState = {}; 
+  for(let i of state.biologicalData){
+    state.mapOfState[i.title] = true; 
+  }
+  render(); 
+}
+
+function render(){
+  console.log(state); 
+  var renderArray = []; 
+  for(let i of state.biologicalData){
+    if(state.mapOfState[i.title]){
+      renderArray.push(i); 
+    } 
+  }
+  d3.select(".lines").selectAll("svg").remove(); 
+  var svg = d3.select(".lines").selectAll("svg")
+    .data(renderArray) 
     .enter().append("svg")
       .attr("class", "bullet")
       .attr("width", width + margin.left + margin.right)
@@ -55,17 +82,31 @@ d3.json("data_reorg.json", function(error, data) {
 
   var title = svg.append("g")
       .style("text-anchor", "end")
-      .attr("transform", "translate(-6," + height / 2 + ")");
 
   title.append("text")
       .attr("class", "title")
       .text(function(d) { return d.title; });
-
   title.append("text")
       .attr("class", "subtitle")
       .attr("dy", "0.5em")
       .text(function(d) { return d.subtitle; });
-});
 
+  //action listener for checking/unchecking boxes 
+  d3.selectAll(".myCheckbox").on("change", function(d){ 
+    var type = this.value; //type keeps track of the label of the checkbox that was changed 
+    var cb = d3.select(this); 
+    var status = cb.property("checked"); 
+    selectionUpdate(type, status); 
+                                                                                                                                                         
+  });
+}
+
+render(); 
+
+//get the data 
+d3.json("data_reorg.json", function(error, data) {
+  if (error) throw error;
+  biologicalUpdate(data); 
+}); 
 
 </script>
