@@ -28,8 +28,7 @@ body {
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script src="bullet.js"></script>
 <body>
-  <input type="checkbox" checked = "true" name = "title" class = "myCheckbox" value = "ENSG-98242.13">ENSG-98242.13
-  <input type="checkbox" checked = "true" name = "title" class = "myCheckbox" value = "ENSG-34108.12">ENSG-34108.12
+  <div class = "checkboxes"> </div>
   <div class = "lines" > </div>
 </body>
 <script>
@@ -69,6 +68,17 @@ function render(){
       renderArray.push(i); 
     } 
   }
+  d3.select(".checkboxes").selectAll("label").remove(); 
+  d3.select(".checkboxes").selectAll("label")
+    .data(Object.keys(state.mapOfState))
+    .enter().append("label")
+      .text((key) => key)
+      .append("input")
+      .attr("type", "checkbox")
+      .property("checked", (key) => state.mapOfState[key])
+      .attr("class", "myCheckbox")
+      .attr("value", (key) => key)
+
   d3.select(".lines").selectAll("svg").remove(); 
   var svg = d3.select(".lines").selectAll("svg")
     .data(renderArray) 
@@ -92,6 +102,7 @@ function render(){
       .text(function(d) { return d.subtitle; });
 
   //action listener for checking/unchecking boxes 
+  
   d3.selectAll(".myCheckbox").on("change", function(d){ 
     var type = this.value; //type keeps track of the label of the checkbox that was changed 
     var cb = d3.select(this); 
@@ -99,6 +110,7 @@ function render(){
     selectionUpdate(type, status); 
                                                                                                                                                          
   });
+  
 }
 
 render(); 
