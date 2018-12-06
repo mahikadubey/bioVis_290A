@@ -4,8 +4,8 @@
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: auto;
-  padding-top: 40px;
-  position: relative;
+  padding-top: 60px;
+  position: absolute; 
   width: 960px;
 }
 .bullet { font: 10px sans-serif; }
@@ -24,19 +24,57 @@ body {
 .bullet .measure.s7 { fill: #ffe1e1; }
 .bullet .title { font-size: 13px; font-weight: bold; }
 .bullet .subtitle { fill: #999; }
+
+
+div.tooltip{
+  position:absolute;
+  text-align:center;
+  width:200px;
+  height:28px;
+  padding:2px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none; 
+}
+
+div.checkboxes{
+  position: absolute;
+  width: 150px;
+  right: -200px;
+  top: 20px;
+}
+
+div.vizname{
+  position: absolute;
+  right: 350px;
+  top: 20px;
+  font: 18px sans-serif;
+  color: #4487e5;
+}
+
+
 </style>
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script src="bullet.js"></script>
 <body>
+  <div class = "vizname"> eVIP Z-Score Visualization</div>
   <div class = "checkboxes"> </div>
   <div class = "lines" > </div>
 </body>
 <script>
 
-var margin = {top: 5, right: 40, bottom: 5, left: 105},
+//creates the div for the tooltip
+var div = d3.select("body").append("div")
+  .attr("class", "tooltip")
+  .style("opacity", 0);
+
+var margin = {top: 5, right: 40, bottom: 5, left: 105}, 
     width = 960 - margin.left - margin.right,
     height = 50 - margin.top - margin.bottom;
 
+//data structure to hold the state for checkboxes
 var state = {
   "mapOfState":{},
   "biologicalData":[]
@@ -61,7 +99,7 @@ function biologicalUpdate(data){
 }
 
 function render(){
-  console.log(state); 
+  //console.log(state); 
   var renderArray = []; 
   for(let i of state.biologicalData){
     if(state.mapOfState[i.title]){
@@ -78,6 +116,7 @@ function render(){
       .property("checked", (key) => state.mapOfState[key])
       .attr("class", "myCheckbox")
       .attr("value", (key) => key)
+      
 
   d3.select(".lines").selectAll("svg").remove(); 
   var svg = d3.select(".lines").selectAll("svg")
@@ -93,16 +132,40 @@ function render(){
   var title = svg.append("g")
       .style("text-anchor", "end")
 
+  // gene name 
   title.append("text")
       .attr("class", "title")
+      .attr("dy", ".5em")
+      .on("mouseover", function(d){
+            div.transition()
+              .duration(200)
+              .style("opacity", .9);
+            div.html(d.markers)
+              .style("left", 5 + "px")
+              .style("top", d3.event.pageY-40 + "px")
+               //.style("left", (d3.event.pageX) + "px")
+               //.style("top", (d3.event.pageY-40) + "px");
+          })
+          .on("mouseout", function(d){
+            div.transition()
+              .duration(500)
+              .style("opacity", 0); 
+          })
       .text(function(d) { return d.title; });
+
+  // gene type
   title.append("text")
       .attr("class", "subtitle")
-      .attr("dy", "0.5em")
+      .attr("dy", "2em")
+      .style("fill", function(d){
+        if(d.subtitle == "RNF43_WT"){return "darkviolet"}
+          else{return "gray"}
+      ;})
+      .attr("font-weight", function(d){
+        if(d.subtitle == "RNF43_WT"){return "bold"};})
       .text(function(d) { return d.subtitle; });
 
   //action listener for checking/unchecking boxes 
-  
   d3.selectAll(".myCheckbox").on("change", function(d){ 
     var type = this.value; //type keeps track of the label of the checkbox that was changed 
     var cb = d3.select(this); 

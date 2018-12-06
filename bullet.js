@@ -3,6 +3,7 @@
 // Chart design based on the recommendations of Stephen Few. Implementation
 // based on the work of Clint Ivy, Jamie Love, and Jason Davies.
 // http://projects.instantcognition.com/protovis/bulletchart/
+
 d3.bullet = function() {
   var orient = "left", // TODO top & bottom
       reverse = false,
@@ -17,9 +18,9 @@ d3.bullet = function() {
   function bullet(g) {
     g.each(function(d, i) {
       var rangez = ranges.call(this, d, i).slice().sort(d3.descending),
-          markerz = markers.call(this, d, i).slice().sort(d3.descending),
+          markerz = markers.call(this, d, i).slice().sort(d3.ascending),
           measurez = measures.call(this, d, i).slice().sort(d3.descending),
-          g = d3.select(this);
+          g = d3.select(this); 
 
       // Compute the new x-scale.
       var x1 = d3.scale.linear()
@@ -38,30 +39,12 @@ d3.bullet = function() {
       // Derive width-scales from the x-scales.
       var w0 = bulletWidth(x0),
           w1 = bulletWidth(x1);
-
-      // Update the range rects.
-      /*var range = g.selectAll("rect.range")
-          .data(rangez);
-
-      range.enter().append("rect")
-          .attr("class", function(d, i) { return "range s" + i; })
-          .attr("width", w0)
-          .attr("height", height)
-          .attr("x", reverse ? x0 : 0)
-        .transition()
-          .duration(duration)
-          .attr("width", w1)
-          .attr("x", reverse ? x1 : 0);
-
-      range.transition()
-          .duration(duration)
-          .attr("x", reverse ? x1 : 0)
-          .attr("width", w1)
-          .attr("height", height);*/
-
+      
       // Update the measure rects.
       var measure = g.selectAll("rect.measure")
           .data(measurez);
+          console.log("measurez: " + measurez);
+          console.log("markerz: " + markerz); 
 
       measure.enter().append("rect")
           .attr("class", function(d, i) { return "measure s" + i; })
@@ -86,6 +69,7 @@ d3.bullet = function() {
           .data(markerz);
 
       marker.enter().append("line")
+          .style("stroke-width", 0.5)
           .attr("class", "marker")
           .attr("x1", x0)
           .attr("x2", x0)
