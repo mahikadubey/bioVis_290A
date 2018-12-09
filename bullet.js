@@ -18,7 +18,7 @@ d3.bullet = function() {
   function bullet(g) {
     g.each(function(d, i) {
       var rangez = ranges.call(this, d, i).slice().sort(d3.descending),
-          markerz = markers.call(this, d, i).slice().sort(d3.ascending),
+          markerz = markers.call(this, d, i).sort(function(a,b){return a-b;}).slice(),
           measurez = measures.call(this, d, i).slice().sort(d3.descending),
           g = d3.select(this); 
 
